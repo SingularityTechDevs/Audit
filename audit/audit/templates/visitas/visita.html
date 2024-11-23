@@ -1238,162 +1238,316 @@
     
 </script>
 
-  <script type="text/javascript">
-
-
-    function nuevofamiliar(){
-      console.log("boton nuevo paciente presionado");
-      $('#familiarmodal').modal('show');
-
-    }
-
-    function cerrarfamiliarmodal(){
-      console.log("boton nuevo paciente presionado");
-      $('#familiarmodal').modal('hide');
-
-    }
-
-
-    function nuevovehiculo(){
-      console.log("boton nuevo paciente presionado");
-      $('#vehiculomodal').modal('show');
-
-    }
-
-    function cerrarmodalvehiculo(){
-      console.log("boton nuevo paciente presionado");
-      $('#vehiculomodal').modal('hide');
-
-    }
-
-
-    function modalvivienda(){
-      console.log("boton nuevo paciente presionado");
-      $('#viviendamodal').modal('show');
-
-    }
-
-    function cerrarmodalvivienda(){
-      console.log("boton nuevo paciente presionado");
-      $('#viviendamodal').modal('hide');
-
-    }
-
-
-    
-    var map = undefined;
-    var marker = undefined;
-    var position;
-    var coordenadas;
-    var nombreUbicacion;
-
-    function iniciar_mapa(){
-    	navigator.geolocation.getCurrentPosition(function(posicion) {
-    	   position = [posicion.coords.latitude,posicion.coords.longitude];
-    	   coordenadas = {
-    	         lat: posicion.coords.latitude,
-    	         lng: posicion.coords.longitude
-    	       };
-    	   initMap();
-    	});
-
-
-
-    }
-
-
-    function alertas(titulo,icono,texto){
-      Swal.fire({
-                    position: "top-end",
-                    icon: icono,
-                    title: titulo,
-                    text: texto,
-                    showConfirmButton: false,
-                    timer: 4000
-                  });
-    }
-
-    
-
-
-
-    var position1 = [18.557531, -69.90714];
-    
-    function initMap() {
-            
-        var latlng = new google.maps.LatLng(position[0], position[1]);
-        document.getElementById("lat").innerHTML = "";
-        document.getElementById("lat").innerHTML = position[0];
-
-        document.getElementById("long").innerHTML = "";
-        document.getElementById("long").innerHTML = position[1];
-        var myOptions = {
-            mapId: "a8e7fef2ab872101",
-            zoom: 15,
-            center: latlng,
-        };
-        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    
-        marker = new google.maps.Marker({
-            icon: {
-             url: 'https://static.vecteezy.com/system/resources/thumbnails/017/178/337/small/location-map-marker-icon-symbol-on-transparent-background-free-png.png',
-             size: new google.maps.Size(50, 50),
-             scaledSize: new google.maps.Size(50, 50),
-             anchor: new google.maps.Point(0, 50)
-            },
-            position: latlng,
-            map: map,
-            title: "Your current location!"
-        });
-    
-        google.maps.event.addListener(map, 'click', function(me) {
-            var result = [me.latLng.lat(), me.latLng.lng()];
-            transition(result);
-        });
-
-
-        var geocoder = new google.maps.Geocoder();
-          geocoder.geocode({'location': coordenadas}, function(results, status) {
-            if (status === 'OK') {
-              if (results[0]) {
-                nombreUbicacion = results[0].formatted_address;
-                document.getElementById("labelubi").innerHTML = "";
-                document.getElementById("labelubi").innerHTML = nombreUbicacion;
-              } else {
-                alert('No se encontraron resultados para esta ubicación.');
+<script type="text/javascript">
+  // Configuración centralizada
+  const CONFIG = {
+      map: {
+          zoom: 16, // Aumentado para mejor precisión
+          mapId: "a8e7fef2ab872101",
+          markerIcon: {
+              url: 'https://static.vecteezy.com/system/resources/thumbnails/017/178/337/small/location-map-marker-icon-symbol-on-transparent-background-free-png.png',
+              size: [50, 50],
+              anchor: [0, 50]
+          }
+      },
+      geolocation: {
+          enableHighAccuracy: true,
+          timeout: 15000,        // Aumentado a 15 segundos
+          maximumAge: 0,         // Siempre obtener posición nueva
+          watchPosition: false   // Opción para seguimiento continuo
+      },
+      animation: {
+          numDeltas: 100,
+          delay: 10
+      }
+  };
+  
+  class LocationMap {
+      constructor() {
+          this.map = null;
+          this.marker = null;
+          this.position = null;
+          this.coordenadas = null;
+          this.nombreUbicacion = null;
+          this.watchId = null;
+          this.accuracyCircle = null;
+          this.lastKnownPosition = null;
+      }
+  
+      async iniciar_mapa() {
+          try {
+              // Primero intentamos obtener una ubicación rápida
+              await this.obtenerUbicacionInicial();
+              
+              // Luego iniciamos un seguimiento más preciso si está configurado
+              if (CONFIG.geolocation.watchPosition) {
+                  this.iniciarSeguimientoUbicacion();
               }
-            } else {
-              alert('Geocodificación fallida debido a: ' + status);
-            }
+          } catch (error) {
+              this.handleGeolocationError(error);
+          }
+      }
+  
+      async obtenerUbicacionInicial() {
+          return new Promise((resolve, reject) => {
+              if (!navigator.geolocation) {
+                  reject(new Error('Geolocalización no soportada en este navegador'));
+                  return;
+              }
+  
+              // Primero intentamos obtener la última ubicación conocida
+              if (this.lastKnownPosition) {
+                  this.actualizarPosicion(this.lastKnownPosition);
+                  resolve(this.lastKnownPosition);
+                  return;
+              }
+  
+              // Configuración para alta precisión
+              const options = {
+                  enableHighAccuracy: CONFIG.geolocation.enableHighAccuracy,
+                  timeout: CONFIG.geolocation.timeout,
+                  maximumAge: CONFIG.geolocation.maximumAge
+              };
+  
+              navigator.geolocation.getCurrentPosition(
+                  (posicion) => {
+                      console.log('Precisión de la ubicación:', posicion.coords.accuracy, 'metros');
+                      
+                      // Solo actualizar si la precisión es mejor que 100 metros
+                      if (posicion.coords.accuracy <= 100 || !this.position) {
+                          this.actualizarPosicion(posicion);
+                          resolve(posicion);
+                      } else {
+                          console.log('Ubicación descartada por baja precisión');
+                          this.mostrarAlerta('Aviso', 'warning', 'Buscando mejor precisión...');
+                          // Intentar de nuevo con más tiempo
+                          this.obtenerUbicacionPrecisa();
+                      }
+                  },
+                  (error) => {
+                      reject(error);
+                  },
+                  options
+              );
           });
-
-    }
-    
-    var numDeltas = 100;
-    var delay = 10; //milliseconds
-    var i = 0;
-    var deltaLat;
-    var deltaLng;
-    function transition(result){
-        i = 0;
-        deltaLat = (result[0] - position[0])/numDeltas;
-        deltaLng = (result[1] - position[1])/numDeltas;
-        moveMarker();
-    }
-    
-    function moveMarker(){
-        position[0] += deltaLat;
-        position[1] += deltaLng;
-        var latlng = new google.maps.LatLng(position[0], position[1]);
-        marker.setPosition(latlng);
-        if(i!=numDeltas){
-            i++;
-            setTimeout(moveMarker, delay);
-        }
-    }
-    
-    
-</script>
-
+      }
+  
+      obtenerUbicacionPrecisa() {
+          const optionsPrecise = {
+              enableHighAccuracy: true,
+              timeout: 30000, // 30 segundos
+              maximumAge: 0
+          };
+  
+          navigator.geolocation.getCurrentPosition(
+              (posicion) => {
+                  console.log('Nueva precisión:', posicion.coords.accuracy, 'metros');
+                  this.actualizarPosicion(posicion);
+              },
+              (error) => this.handleGeolocationError(error),
+              optionsPrecise
+          );
+      }
+  
+      actualizarPosicion(posicion) {
+          this.lastKnownPosition = posicion;
+          this.position = [posicion.coords.latitude, posicion.coords.longitude];
+          this.coordenadas = {
+              lat: posicion.coords.latitude,
+              lng: posicion.coords.longitude
+          };
+          
+          console.log('Ubicación actualizada:', this.position);
+          console.log('Precisión:', posicion.coords.accuracy, 'metros');
+          
+          if (this.map) {
+              this.actualizarMapa();
+          } else {
+              this.initMap();
+          }
+      }
+  
+      initMap() {
+          const latlng = new google.maps.LatLng(this.position[0], this.position[1]);
+          this.updateCoordinatesDisplay();
+  
+          const myOptions = {
+              mapId: CONFIG.map.mapId,
+              zoom: CONFIG.map.zoom,
+              center: latlng,
+              mapTypeControl: true,
+              streetViewControl: true,
+              fullscreenControl: true,
+              zoomControl: true
+          };
+  
+          this.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+          this.createMarker(latlng);
+          this.createAccuracyCircle(latlng, this.lastKnownPosition.coords.accuracy);
+          this.setupMapClickListener();
+          this.geocodeLocation();
+      }
+  
+      createAccuracyCircle(latlng, accuracy) {
+          if (this.accuracyCircle) {
+              this.accuracyCircle.setMap(null);
+          }
+  
+          this.accuracyCircle = new google.maps.Circle({
+              center: latlng,
+              radius: accuracy,
+              map: this.map,
+              fillColor: '#4285F4',
+              fillOpacity: 0.2,
+              strokeColor: '#4285F4',
+              strokeOpacity: 0.4,
+              strokeWeight: 1
+          });
+      }
+  
+      actualizarMapa() {
+          const latlng = new google.maps.LatLng(this.position[0], this.position[1]);
+          this.map.setCenter(latlng);
+          this.marker.setPosition(latlng);
+          this.updateCoordinatesDisplay();
+          this.createAccuracyCircle(latlng, this.lastKnownPosition.coords.accuracy);
+          this.geocodeLocation();
+      }
+  
+      createMarker(latlng) {
+          this.marker = new google.maps.Marker({
+              icon: {
+                  url: CONFIG.map.markerIcon.url,
+                  size: new google.maps.Size(...CONFIG.map.markerIcon.size),
+                  scaledSize: new google.maps.Size(...CONFIG.map.markerIcon.size),
+                  anchor: new google.maps.Point(...CONFIG.map.markerIcon.anchor)
+              },
+              position: latlng,
+              map: this.map,
+              title: "Tu ubicación actual",
+              animation: google.maps.Animation.DROP
+          });
+      }
+  
+      updateCoordinatesDisplay() {
+          const elements = {
+              lat: document.getElementById("lat"),
+              long: document.getElementById("long")
+          };
+  
+          Object.entries(elements).forEach(([key, element]) => {
+              if (element) {
+                  element.innerHTML = this.position[key === 'lat' ? 0 : 1].toFixed(6);
+              }
+          });
+      }
+  
+      setupMapClickListener() {
+          this.map.addListener('click', (event) => {
+              const result = [event.latLng.lat(), event.latLng.lng()];
+              this.transition(result);
+          });
+      }
+  
+      geocodeLocation() {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ 'location': this.coordenadas }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                  this.nombreUbicacion = results[0].formatted_address;
+                  const labelubi = document.getElementById("labelubi");
+                  if (labelubi) {
+                      labelubi.innerHTML = this.nombreUbicacion;
+                  }
+              } else {
+                  this.mostrarAlerta('Error', 'error', 'No se encontró la dirección para esta ubicación');
+              }
+          });
+      }
+  
+      transition(result) {
+          const numDeltas = CONFIG.animation.numDeltas;
+          const deltaLat = (result[0] - this.position[0]) / numDeltas;
+          const deltaLng = (result[1] - this.position[1]) / numDeltas;
+          this.animateMarker(deltaLat, deltaLng, numDeltas, 0);
+      }
+  
+      animateMarker(deltaLat, deltaLng, numDeltas, i) {
+          this.position[0] += deltaLat;
+          this.position[1] += deltaLng;
+          const latlng = new google.maps.LatLng(this.position[0], this.position[1]);
+          this.marker.setPosition(latlng);
+          
+          if (i < numDeltas) {
+              requestAnimationFrame(() => {
+                  this.animateMarker(deltaLat, deltaLng, numDeltas, i + 1);
+              });
+          } else {
+              this.updateCoordinatesDisplay();
+              this.geocodeLocation();
+          }
+      }
+  
+      handleGeolocationError(error) {
+          const errorMessages = {
+              1: 'Permiso de ubicación denegado. Por favor, habilita la ubicación en tu navegador.',
+              2: 'No se pudo obtener la ubicación. Verifica tu conexión GPS.',
+              3: 'Se agotó el tiempo de espera. Intenta de nuevo.'
+          };
+          
+          console.error('Error de geolocalización:', error);
+          this.mostrarAlerta('Error de ubicación', 'error', 
+              errorMessages[error.code] || 'Error desconocido al obtener la ubicación');
+      }
+  
+      mostrarAlerta(titulo, icono, texto) {
+          Swal.fire({
+              position: "top-end",
+              icon: icono,
+              title: titulo,
+              text: texto,
+              showConfirmButton: false,
+              timer: 4000
+          });
+      }
+  }
+  
+  // Instancia global del mapa
+  const locationMapInstance = new LocationMap();
+  
+  // Función global para iniciar el mapa
+  function iniciar_mapa() {
+      locationMapInstance.iniciar_mapa();
+  }
+  
+  // Función global para alertas
+  function alertas(titulo, icono, texto) {
+      locationMapInstance.mostrarAlerta(titulo, icono, texto);
+  }
+  
+  // Funciones para los modales (mantenidas sin cambios)
+  function nuevofamiliar() {
+      $('#familiarmodal').modal('show');
+  }
+  
+  function cerrarfamiliarmodal() {
+      $('#familiarmodal').modal('hide');
+  }
+  
+  function nuevovehiculo() {
+      $('#vehiculomodal').modal('show');
+  }
+  
+  function cerrarmodalvehiculo() {
+      $('#vehiculomodal').modal('hide');
+  }
+  
+  function modalvivienda() {
+      $('#viviendamodal').modal('show');
+  }
+  
+  function cerrarmodalvivienda() {
+      $('#viviendamodal').modal('hide');
+  }
+  </script>
 
 {% endblock %}
