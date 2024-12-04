@@ -34,8 +34,8 @@ INSTALLED_APPS = [
    'django.contrib.staticfiles',
    'fontawesome_5',
    'corsheaders',
-   'core',
    'visitas',
+   'core',
 ]
 
 MIDDLEWARE = [
