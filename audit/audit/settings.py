@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-skr2!wj4s&bqd85pt=bf#b*d5%7&6d=0!$!i8rn4(^uxp&rbut'
 
-DEBUG = True  # Temporalmente para ver el error
+DEBUG = False  # Temporalmente para ver el error
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -116,9 +116,8 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-   BASE_DIR / "static",
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
