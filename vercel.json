@@ -5,24 +5,18 @@
         "config": { 
             "maxLambdaSize": "15mb", 
             "runtime": "python3.9",
-            "includeFiles": [
-                "audit/**/*",
-                "core/**/*",
-                "visitas/**/*",
-                "templates/**/*",
-                "static/**/*",
-                "media/**/*"
-            ]
+            "includedFiles": ["./**/*"] 
         }
     }],
     "routes": [
         {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
-        },
-        {
             "src": "/(.*)",
             "dest": "audit/audit/wsgi.py"
         }
-    ]
+    ],
+    "functions": {
+        "audit/audit/wsgi.py": {
+            "includeFiles": ["core/**", "visitas/**", "audit/**"]
+        }
+    }
 }
