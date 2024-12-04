@@ -28,4 +28,6 @@ urlpatterns = [
 	path('loginaction/', loginaction, name="loginaction"),
 	path('index/', index, name="index"),
 	path('LogoutRequest/', LogoutRequest, name="LogoutRequest"),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+
