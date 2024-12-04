@@ -40,4 +40,4 @@ jobs:
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-args: "--prod"
-        working-directory: .
+        working-directory: working-directory: ./audit
