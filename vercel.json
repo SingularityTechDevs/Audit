@@ -1,22 +1,24 @@
 {
-    "version": 2,
-    "builds": [{
-        "src": "audit/audit/wsgi.py",
-        "use": "@vercel/python",
-        "config": {
-            "distDir": "staticfiles",
-            "maxLambdaSize": "15mb",
-            "runtime": "python3.9",
-            "includeFiles": ["**/*"]
-        }
-    }],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "audit/audit/wsgi.py"
-        }
-    ],
-    "headers": [
+  "version": 2,
+  "builds": [
+    {
+      "src": "audit/audit/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "distDir": "staticfiles",
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9",
+        "includeFiles": ["**/*"]
+      }
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "audit/audit/wsgi.py"
+    }
+  ],
+  "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
