@@ -22,7 +22,10 @@ LOGGING = {
 
 ALLOWED_HOSTS = ['178.128.145.204','127.0.0.1','.vercel.app']
 
+
+#Apagar y encender los cors para que los js funcionen haciendo el request al mismo origen
 CORS_ORIGIN_ALLOW_ALL = True
+
 
 INSTALLED_APPS = [
    'whitenoise.runserver_nostatic',
