@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 SECRET_KEY = 'django-insecure-skr2!wj4s&bqd85pt=bf#b*d5%7&6d=0!$!i8rn4(^uxp&rbut'
 
