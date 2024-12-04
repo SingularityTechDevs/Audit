@@ -4,17 +4,13 @@
         "src": "audit/audit/wsgi.py",
         "use": "@vercel/python",
         "config": {
-            "distDir": "static",
+            "distDir": "staticfiles",
             "maxLambdaSize": "15mb",
             "runtime": "python3.9",
             "includeFiles": ["**/*"]
         }
     }],
     "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
-        },
         {
             "src": "/(.*)",
             "dest": "audit/audit/wsgi.py"
