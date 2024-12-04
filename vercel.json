@@ -6,15 +6,7 @@
         "config": {
             "maxLambdaSize": "15mb",
             "runtime": "python3.9",
-            "includeFiles": [
-                "audit/**/*",
-                "core/**/*",
-                "visitas/**/*",
-                "templates/**/*",
-                "static/**/*",
-                "media/**/*",
-                "*.py"
-            ]
+            "includeFiles": ["**/*"]
         }
     }],
     "routes": [
