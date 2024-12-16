@@ -1,11 +1,16 @@
 from pathlib import Path
 import os
 
+import pymysql
+pymysql.install_as_MySQLdb()
+
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-skr2!wj4s&bqd85pt=bf#b*d5%7&6d=0!$!i8rn4(^uxp&rbut'
 
-DEBUG = False  # Temporalmente para ver el error
+DEBUG = True  # Temporalmente para ver el error
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -83,11 +88,12 @@ WSGI_APPLICATION = 'audit.wsgi.application'
 AUTH_USER_MODEL = 'core.Usuario'
 
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  # Use SQLite backend
+        'NAME': BASE_DIR / 'db.sqlite3',  # Path to the SQLite database file
+    }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
    {
@@ -128,5 +134,3 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/login/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
