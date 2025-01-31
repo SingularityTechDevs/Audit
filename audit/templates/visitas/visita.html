@@ -892,53 +892,43 @@
    var arrayvehiculos = [];
    var arrayvivienda = [];
 
-   function enviar_visita(){
+   function enviar_visita() {
+    const cita = {{cita.id}};
+    const currentPosition = locationMapInstance.position;
+    
+    if (!currentPosition) {
+        alertas("Error", "error", "No se ha podido obtener la ubicación actual");
+        return;
+    }
 
-      var cita = {{cita.id}}
+    const datos = new FormData();
+    datos.append('lat', currentPosition[0]);
+    datos.append('long', currentPosition[1]);
+    datos.append('cita', cita);
+    
+    // Array data
+    datos.append('arrayfamiliares', JSON.stringify(arrayfamiliares));
+    datos.append('arrayvehiculos', JSON.stringify(arrayvehiculos));
+    datos.append('arrayvivienda', JSON.stringify(arrayvivienda));
 
-      console.log(cita);
-
-
-
-      var datos = new FormData();
-
-      
-      datos.append('lat', position[0]);
-      datos.append('long', position[1]);
-      datos.append('cita', cita);
-
-
-
-      //Array de datos
-      datos.append('arrayfamiliares', JSON.stringify(arrayfamiliares));
-      datos.append('arrayvehiculos', JSON.stringify(arrayvehiculos));
-      datos.append('arrayvivienda', JSON.stringify(arrayvivienda));
-
-
-
-      //Realiza la solicitud AJAX con método POST
-        $.ajax({
-            headers: {'X-CSRFToken': '{{ csrf_token }}'},
-            url: '{% url "registrar_visita" %}',  // La URL de tu vista Django
-            type: 'POST',
-            data: datos,
-            processData: false,
-            contentType: false,  // Convierte los datos a JSON si es necesario
-            dataType: 'json',
-            success: function(data) {
-                //Maneja la respuesta JSON aquí
-                console.log(data);
-                alertas("Visita","success","Visita registrada correctamente");
-               
-                
-            },
-            error: function(error) {
-                //Maneja los errores aquí
-                console.error('Error en la solicitud AJAX:', error);
-                //alertas("Visita","success","Visita registrada correctamente");
-            }
-        });
-   }
+    $.ajax({
+        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        url: '{% url "registrar_visita" %}',
+        type: 'POST',
+        data: datos,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(data) {
+            console.log(data);
+            alertas("Visita", "success", "Visita registrada correctamente");
+        },
+        error: function(error) {
+            console.error('Error en la solicitud AJAX:', error);
+            alertas("Error", "error", "Error al registrar la visita");
+        }
+    });
+}
 
    function agregar_vivienda(){
 
