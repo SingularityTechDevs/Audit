@@ -1,0 +1,49 @@
+{% load static %}
+<!-- recetas/templates/recetas/receta_template.html -->
+<!-- recetas/templates/recetas/receta_template.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url("{% static 'recetas/receta.jpeg' %}");
+            background-size: 50%; /* o contain, u otros valores según necesites */
+            background-position: center center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            color: black;
+        }
+
+        .receta-container {
+            position: relative;
+            width: 800px; /* o cualquier valor específico */
+            height: 1100px; /* o cualquier valor específico */
+            text-align: center;
+            padding: 30mm; /* Espacio alrededor del contenido, puedes ajustarlo según tus necesidades */
+        }
+
+
+        .receta-info {
+            position: absolute;
+            top: 50%;
+            left: 70%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="receta-container">
+        <div class="receta-info">
+            <h1>Receta Médica</h1>
+            <p><strong>Paciente:</strong> {{ receta.paciente }}</p>
+            <p><strong>Medicamento:</strong> {{ receta.medicamento }}</p>
+            <p><strong>Dosis:</strong> {{ receta.dosis }}</p>
+            <!-- Puedes agregar más información de la receta según sea necesario -->
+        </div>
+    </div>
+</body>
+</html>

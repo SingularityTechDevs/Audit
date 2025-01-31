@@ -1,0 +1,17 @@
+<!-- recetas/templates/recetas/lista_recetas.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Recetas</title>
+</head>
+<body>
+    <h1>Lista de Recetas</h1>
+    <ul>
+        {% for receta in recetas %}
+            <li>{{ receta.paciente }} - {{ receta.medicamento }} - {{ receta.dosis }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'crear_receta' %}">Crear nueva receta</a>
+</body>
+</html>

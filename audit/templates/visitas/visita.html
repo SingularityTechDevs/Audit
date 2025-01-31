@@ -1,0 +1,1536 @@
+{% extends "core2.html" %}
+{% load static %}
+{% block content %} 
+<style type="text/css">
+      /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+      }
+
+      /* Set the size of the div element that contains the map */
+      #map_canvas {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+      }
+    </style>
+<br>
+<br>
+
+
+{% if cita.estatus == "PENDIENTE" %}
+<div class="container-fluid py-4">
+      
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card bg-gradient-dark">
+            <div class="card-header bg-transparent">
+              <div class="row">
+                <div class="col-lg-4 col-md-6 col-12">
+                 
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 my-auto ms-auto">
+                 
+                </div>
+              </div>
+              <hr class="horizontal light">
+              <div class="row">
+                <div class="col-lg-4 col-md-6 col-12">
+                  <div class="d-flex align-items-center position-relative">
+                    <h3 class="text-white mb-1">Lat<small class="align-top text-sm">Latitud</small></h3>
+                    <p class="text-white opacity-8 mb-1 ms-3"><div id="lat"></div></p>
+                    <hr class="vertical light mt-0">
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                  <div class="d-flex align-items-center position-relative">
+                    <h3 class="text-white mb-1 ms-lg-auto ms-0">Long<small class="align-top text-sm">Longitud</small></h3>
+                    <p class="text-white opacity-8 mb-1 ms-3 me-auto"><div id="long"></div></p>
+                    <hr class="vertical light mt-0">
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 ms-lg-auto">
+                  <div class="d-flex align-items-center">
+                    <h3 class="text-white mb-1 ms-lg-auto">UB<small class="align-top text-sm">Ubicacion</small></h3>
+                    <p class="text-white opacity-8 mb-1 ms-3"><div id="labelubi"></div></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body px-0 py-0">
+              
+              <div id="map_canvas"></div>
+            </div>
+            <div class="card-footer">
+              <div class="row">
+                
+                
+                
+                <div class="col-lg-1 col-md-6 col-4 my-auto ms-auto">
+                  <i class="material-icons text-white mt-2 ms-auto" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Hide menu">format_list_bulleted</i>
+                  <i class="material-icons text-white ms-3 mt-2" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Track messages">mode_comment</i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+
+      <div class="row">
+      <div class="col-lg-12 col-12 mx-auto position-relative">
+         <div class="card">
+            <div class="card-header p-3 pt-2">
+               <div class="icon icon-lg icon-shape bg-gradient-info shadow text-center border-radius-xl mt-n4 me-3 float-start">
+                  <i class="material-icons opacity-10">event</i>
+               </div>
+               <h6 class="mb-0">Formulario de visita</h6>
+            </div>
+            <div class="card-body pt-2">
+                
+
+               
+
+              <br>
+
+               <div class="card" style="display: none;" id="cardfamiliares">
+                 <div class="table-responsive">
+                   <table class="table align-items-center mb-0">
+
+                     <thead>
+                        <h5>Familiares</h5>
+                       <tr>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre Completo</th>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Parentezco</th>
+                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Parentezco</th>
+                        
+                       </tr>
+                     </thead>
+                     <tbody id="tablefamiliares">
+                       
+
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+
+               
+               <br>
+
+               <div class="card" style="display: none;" id="cardvehiculo">
+                 <div class="table-responsive">
+                   <table class="table align-items-center mb-0">
+
+                     <thead>
+                        <h5>Vehiculos</h5>
+                       <tr>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Marca</th>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Modelo</th>
+                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Año</th>
+                        
+                       </tr>
+                     </thead>
+                     <tbody id="tablevehiculo">
+                       
+
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+
+               <br>
+
+               <div class="card" style="display: none;" id="cardvivienda">
+                 <div class="table-responsive">
+                   <table class="table align-items-center mb-0">
+
+                     <thead>
+                        <h5>Vivienda</h5>
+                       <tr>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tipo</th>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Techo</th>
+                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pared</th>
+                        
+                       </tr>
+                     </thead>
+                     <tbody id="tablevivienda">
+                       
+
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+
+
+               
+
+               <br>
+
+                  <button type="button" name="button" onclick="nuevofamiliar()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Familiar </span></button>
+
+                  <button type="button" name="button" onclick="nuevovehiculo()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Vehiculos </span></button>
+
+
+                  <button type="button" name="button" onclick="modalvivienda()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Vivienda </span></button>
+
+                 
+
+                  <div class="d-flex justify-content-end mt-4">
+
+
+
+                  
+                  <button id="boton_crear" type="button" style="display:inline;" onclick="enviar_visita()" name="button" class="btn bg-gradient-info m-0 ms-2">Registrar Visita</button>
+                  
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+     <!-- Modal familiar -->
+      <div class="modal fade bd-example-modal-lg" id="familiarmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Agregar Familiar</h5>
+              
+            </div>
+            <div class="modal-body">
+              <div class="p-4">
+              <form>
+
+                
+                <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Nombres</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="nombre_completo" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Apellidos</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="apellido_completo" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Parentezco</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="parentezco" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Edad</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="edad" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  
+                </div>
+                
+                
+                <div class="mt-4">
+                   <div class="col-12">
+                    <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Ocupacion</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="ocupacion" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  
+                </div>
+
+                
+              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="agregar_familiar()" class="btn btn-info">Agregar</button>
+              <button type="button" onclick="cerrarfamiliarmodal()" class="btn btn-secondary">Cerrar</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Modal vivienda -->
+      <div class="modal fade bd-example-modal-lg" id="viviendamodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Agregar Vivienda</h5>
+              
+            </div>
+            <div class="modal-body">
+              <div class="p-4">
+              <form>
+
+                
+                <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="">
+                        <select type="text" id="choices-tipovivienda" class="form-control">
+                            <option value="">Tipo Vivienda</option>
+                             <option value="Propia">Propia</option>               
+                             <option value="Alquilada">Alquilada</option>
+                        </select>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="">
+                        <select type="text" id="choices-tipotecho" class="form-control">
+                            <option value="">Techo Vivienda</option>
+                             <option value="Techo Zinc">Techo Zinc</option>               
+                             <option value="Techo Concreto">Techo Concreto</option>
+                        </select>
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="">
+                        <select type="text" id="tipopared" class="form-control">
+                            <option value="">Tipo Pared</option>
+                             <option value="Pared Madera">Pared Madera</option>               
+                             <option value="Pared Blocks">Pared Blocks</option>
+                        </select>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Direccion</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="direccion_vivienda" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  
+                </div>
+                
+                
+                <div class="row mt-4">
+                   <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Monto Alquiler</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="monto_alquiler" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Tiempo Ocupando</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="tiempo_ocupando" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  
+                </div>
+
+                <div class="row mt-4">
+                   <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Comentario General</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="comentario_general" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="neveracheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Nevera?</label>
+                    </div>
+
+                  </div>
+
+
+
+                  
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="lavadorackeck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Lavadora?</label>
+                    </div>
+
+                  </div>
+
+                  <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="secadoracheck">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Secadora?</label>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="luzcheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Luz contratada?</label>
+                    </div>
+
+                  </div>
+
+                  <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="parabolacheck">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Parabola?</label>
+                    </div>
+
+                  </div>
+
+
+
+                  
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="gascheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Gas?</label>
+                    </div>
+
+                  </div>
+
+                  <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="internetcheck">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Internet?</label>
+                    </div>
+
+                  </div>
+
+
+
+                  
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="aguacheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Agua Regular?</label>
+                    </div>
+
+                  </div>
+
+                  <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="telecablecheck">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Telecable?</label>
+                    </div>
+
+                  </div>
+
+
+
+                  
+                </div>
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="computadoracheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Computadoras?</label>
+                    </div>
+
+                  </div>
+
+                  
+
+                    <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Cantidad Computadoras</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="cantidad_computadoras" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                 
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Cantidad Televisores</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="cantidad_televisores" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  
+
+                    <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Comentario Televisores</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="comentario_televisores" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                 
+                </div>
+
+                 <div class="row mt-4">
+                   <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Cantidad Aires Acondicionados</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="cantidad_aires" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  
+
+                    <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Comentario Aires Acondicionados</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="comentario_aires" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                 
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="otrosservicioscheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Otros servicios?</label>
+                    </div>
+
+                  </div>
+
+                  
+
+                    <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Comentarios otros servicios</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="comentario_otros" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                 
+                </div>
+
+
+                <div class="row mt-4">
+                   <div class="col-6">
+
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="telefonocheck" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Telefono?</label>
+                    </div>
+
+                  </div>
+
+                  
+
+                    <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Comentario Telefono</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="comentario_Telefono" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                 
+                </div>
+
+
+                <div class="row mt-4">
+                  <div class="col-12">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Comentario Electrodomesticos</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="cometario_electrodomestico" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                 
+                </div>
+
+
+
+                
+              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="agregar_vivienda()" class="btn btn-info">Agregar</button>
+              <button type="button" onclick="cerrarmodalvivienda()" class="btn btn-secondary">Cerrar</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Modal familiar -->
+      <div class="modal fade bd-example-modal-lg" id="vehiculomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Agregar Vehiculo</h5>
+              
+            </div>
+            <div class="modal-body">
+              <div class="p-4">
+              <form>
+
+                
+                <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Marca</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="marca" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Modelo</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="modelo" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Tipo</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="tipo" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Año</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="ano" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  
+                </div>
+                
+                
+                <div class="row mt-4">
+                   <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Modo adquisicion</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="adquisicion" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">Tiempo con vehiculo</label>
+                        <input  type="number" class="form-control" style="text-transform:uppercase;" id="tiempo" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  
+                </div>
+
+                
+              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="registrar_vehiculo()" class="btn btn-info">Agregar</button>
+              <button type="button" onclick="cerrarmodalvehiculo()" class="btn btn-secondary">Cerrar</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    {% else %}
+
+    <div class="container-fluid my-3 py-3">
+
+    <!-- Card Basic Info -->
+          <div class="card mt-4" id="basic-info">
+            <div class="card-header">
+              <h5>Informacion De La Cita</h5>
+            </div>
+            <div class="card-body pt-0">
+              <div class="row">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Usuario Solicitante</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{cita.usuario_solicitud|upper}}">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Visitador Actual Asignado</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{cita.visitador|upper}}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Fecha Agendada</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{cita.fecha_agendada}}">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Direccion</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{cita.direccion|upper}}">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="row mt-4">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Motivo de la cita</label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{cita.motivo|upper}}'>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Observaciones </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{cita.Observaciones|upper}}'>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Estatus </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{cita.estatus}}'>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="row mt-4">
+                
+                
+              </div>
+            </div>
+          </div>
+
+          <br>
+          <br>
+          <br>
+
+
+         <div class="row">
+          
+
+          {% for o in visitas %}
+          
+
+
+          
+          <div class="col-6">
+          <div class="card" data-animation="true">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <a class="d-block blur-shadow-image">
+                <img src="https://i.stack.imgur.com/HILmr.png" alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+              </a>
+              <div class="colored-shadow" style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);"></div>
+            </div>
+            <div class="card-header">
+              <h5>Informacion De La Visita {{o.id}}</h5>
+            </div>
+            <div class="card-body text-center">
+
+
+               <div class="row">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Fecha Visita</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{o.fecha_visita|upper}}">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Tipo Visita</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{o.tipo_visita|upper}}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Nombres Visitado</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{o.nombres|upper}}">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Apellidos Visitado</label>
+                    <input disabled type="text" class="form-control" placeholder="" value="{{o.apellidos|upper}}">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="row mt-4">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Identificacion</label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{o.cedula|upper}}'>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Telefono </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{o.telefonos|upper}}'>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Sexo </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{o.sexo}}'>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Fecha Nacimiento </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{o.fecha_nacimiento}}'>
+                  </div>
+                </div>
+
+
+                
+              </div>
+              <div class="row mt-4">
+
+               <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Ciudad Nacimiento </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{o.ciudad_nacimiento}}'>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="input-group input-group-static">
+                    <label>Nacionalidad </label>
+                    <input disabled type="text" class="form-control" placeholder="" value='{{o.nacionalidad}}'>
+                  </div>
+                </div>
+                
+                
+              </div>
+             
+             
+             
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer d-flex">
+              <p class="font-weight-normal my-auto">{{o.inspector}}</p>
+              <i class="material-icons position-relative ms-auto text-lg me-1 my-auto">place</i>
+              <p class="text-sm my-auto"> {{o.lat}} , {{o.lon}}</p>
+            </div>
+          </div>
+
+       </div>
+     
+          {% endfor %}
+
+        
+    </div>
+
+    </div>
+
+    {% endif %}
+    <script src="{% static 'assets/js/plugins/leaflet.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/nouislider.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/choices.min.js' %}"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyxnXVDA_Y7NoSsB8hn3I1i6cEpqpPixg&callback=iniciar_mapa&v=weekly&channel=2" async></script>
+
+   <script type="text/javascript">
+
+   var arrayfamiliares = [];
+   var arrayvehiculos = [];
+   var arrayvivienda = [];
+
+   function enviar_visita() {
+    const cita = {{cita.id}};
+    const currentPosition = locationMapInstance.position;
+    
+    if (!currentPosition) {
+        alertas("Error", "error", "No se ha podido obtener la ubicación actual");
+        return;
+    }
+
+    const datos = new FormData();
+    datos.append('lat', currentPosition[0]);
+    datos.append('long', currentPosition[1]);
+    datos.append('cita', cita);
+    
+    // Array data
+    datos.append('arrayfamiliares', JSON.stringify(arrayfamiliares));
+    datos.append('arrayvehiculos', JSON.stringify(arrayvehiculos));
+    datos.append('arrayvivienda', JSON.stringify(arrayvivienda));
+
+    $.ajax({
+        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        url: '{% url "registrar_visita" %}',
+        type: 'POST',
+        data: datos,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(data) {
+            console.log(data);
+            alertas("Visita", "success", "Visita registrada correctamente");
+        },
+        error: function(error) {
+            console.error('Error en la solicitud AJAX:', error);
+            alertas("Error", "error", "Error al registrar la visita");
+        }
+    });
+}
+
+   function agregar_vivienda(){
+
+    var tipovivienda =  document.getElementById("choices-tipovivienda").value;
+    var tipotecho =  document.getElementById("choices-tipotecho").value;
+    var tipopared =  document.getElementById("tipopared").value;
+    var direccion_vivienda =  document.getElementById("direccion_vivienda").value;
+    var monto_alquiler =  document.getElementById("monto_alquiler").value;
+    var tiempo_ocupando =  document.getElementById("tiempo_ocupando").value;
+    var comentario_general =  document.getElementById("comentario_general").value;
+    var neveracheck =  document.getElementById("neveracheck").checked;
+    var lavadorackeck =  document.getElementById("lavadorackeck").checked;
+    var secadoracheck =  document.getElementById("secadoracheck").checked;
+    var luzcheck =  document.getElementById("luzcheck").checked;
+    var gascheck =  document.getElementById("gascheck").checked;
+    var internetcheck =  document.getElementById("internetcheck").checked;
+    var aguacheck =  document.getElementById("aguacheck").checked;
+    var telecablecheck =  document.getElementById("telecablecheck").checked;
+    var computadoracheck =  document.getElementById("computadoracheck").checked;
+    var parabolacheck =  document.getElementById("parabolacheck").checked;
+    
+    var cantidad_computadoras =  document.getElementById("cantidad_computadoras").value;
+    var cantidad_televisores =  document.getElementById("cantidad_televisores").value;
+    
+
+    var comentario_televisores =  document.getElementById("comentario_televisores").value;
+    var cantidad_aires =  document.getElementById("cantidad_aires").value;
+    var comentario_aires =  document.getElementById("comentario_aires").value;
+    var otrosservicioscheck =  document.getElementById("otrosservicioscheck").checked;
+    var comentario_otros =  document.getElementById("comentario_otros").value; 
+    var telefonocheck =  document.getElementById("telefonocheck").checked;
+    var comentario_Telefono =  document.getElementById("comentario_Telefono").value;
+    var cometario_electrodomestico =  document.getElementById("cometario_electrodomestico").value;
+    
+    
+    
+
+    console.log(tipovivienda);
+    console.log(tipotecho);
+    console.log(tipopared);
+    console.log(direccion_vivienda);
+    console.log(monto_alquiler);
+    console.log(tiempo_ocupando);
+    console.log(comentario_general);
+    console.log(neveracheck);
+    console.log(lavadorackeck);
+    console.log(secadoracheck);
+    console.log(luzcheck);
+    console.log(parabolacheck);
+    
+    console.log(gascheck);
+    console.log(internetcheck);
+    console.log(aguacheck);
+    console.log(telecablecheck);
+    console.log(computadoracheck);
+    console.log(cantidad_computadoras);
+    console.log(cantidad_televisores);
+    console.log(comentario_televisores);
+    console.log(cantidad_aires);
+    console.log(comentario_aires);
+    console.log(otrosservicioscheck);
+    console.log(comentario_otros);
+    console.log(telefonocheck);
+    console.log(comentario_Telefono);
+    console.log(cometario_electrodomestico);
+    
+
+
+
+    var datos = new FormData();
+
+
+    datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    datos.append('tipovivienda', tipovivienda);
+    datos.append('tipotecho', tipotecho);
+    datos.append('tipopared', tipopared);
+    datos.append('direccion_vivienda', direccion_vivienda);
+    datos.append('monto_alquiler', monto_alquiler);
+    datos.append('tiempo_ocupando', tiempo_ocupando);
+    datos.append('comentario_general', comentario_general);
+    datos.append('neveracheck', neveracheck);
+    datos.append('lavadorackeck', lavadorackeck);
+    datos.append('secadoracheck', secadoracheck);
+    datos.append('luzcheck', luzcheck);
+    datos.append('parabolacheck', parabolacheck);
+    datos.append('gascheck', gascheck);
+    datos.append('aguacheck', aguacheck);
+    datos.append('telecablecheck', telecablecheck);
+    datos.append('computadoracheck', computadoracheck);
+    datos.append('cantidad_computadoras', cantidad_computadoras);
+    datos.append('comentario_televisores', comentario_televisores);
+    datos.append('cantidad_aires', cantidad_aires);
+    datos.append('comentario_aires', comentario_aires);
+    datos.append('otrosservicioscheck', otrosservicioscheck);
+    datos.append('comentario_otros', comentario_otros);
+    datos.append('telefonocheck', telefonocheck);
+    datos.append('comentario_Telefono', comentario_Telefono);
+    datos.append('cometario_electrodomestico', cometario_electrodomestico);
+    
+    
+    
+
+    arrayvivienda.push([tipovivienda,tipotecho,tipopared,direccion_vivienda,monto_alquiler,tiempo_ocupando,comentario_general,neveracheck,lavadorackeck,secadoracheck,luzcheck,parabolacheck,gascheck,aguacheck,telecablecheck,computadoracheck,cantidad_computadoras,cantidad_televisores,comentario_televisores,cantidad_aires,comentario_aires,otrosservicioscheck,comentario_otros,telefonocheck,comentario_Telefono,cometario_electrodomestico]);
+
+    console.log(arrayvivienda);
+
+    $('#tablevivienda').empty();
+
+    for (var i = 0; i < arrayvivienda.length; i++) {
+
+      console.log(arrayvivienda[i]);
+
+      var myString = `<tr>
+                      <td class="text-sm">`+arrayvivienda[i][0].toUpperCase()+`</td>
+                      <td class="text-sm">`+arrayvivienda[i][1].toUpperCase()+`</td>
+                      <td class="text-sm">`+arrayvivienda[i][2].toUpperCase()+`</td>
+                    </tr>`;
+
+      $('#tablevivienda').append(myString);
+
+
+    }
+
+    alertas("Vivienda","success","vivienda agregada corrrectamente");
+
+    document.getElementById("cardvivienda").style.display = "inline";
+
+    cerrarmodalvivienda();
+
+
+   }
+
+
+   function agregar_familiar(){
+
+    var nombre =  document.getElementById("nombre_completo").value;
+    var apellido =  document.getElementById("apellido_completo").value;
+    var parentezco =  document.getElementById("parentezco").value;
+    var edad =  document.getElementById("edad").value;
+    var ocupacion =  document.getElementById("ocupacion").value;
+
+    console.log(nombre);
+    console.log(apellido);
+    console.log(parentezco);
+    console.log(edad);
+    console.log(ocupacion);
+
+    var datos = new FormData();
+
+
+    datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    datos.append('nombre', nombre);
+    datos.append('apellido', apellido);
+    datos.append('parentezco', parentezco);
+    datos.append('edad', edad);
+    datos.append('ocupacion', ocupacion);
+
+    
+
+    arrayfamiliares.push([nombre,apellido,parentezco,ocupacion,edad]);
+
+    console.log(arrayfamiliares);
+
+    $('#tablefamiliares').empty();
+
+    for (var i = 0; i < arrayfamiliares.length; i++) {
+
+      console.log(arrayfamiliares[i]);
+
+      var myString = `<tr>
+                      <td class="text-sm">`+arrayfamiliares[i][0].toUpperCase()+`</td>
+                      <td class="text-sm">`+arrayfamiliares[i][1].toUpperCase()+`</td>
+                      <td class="text-sm">`+arrayfamiliares[i][2].toUpperCase()+`</td>
+                    </tr>`;
+
+      $('#tablefamiliares').append(myString);
+
+
+    }
+
+    alertas("Familiar","success","familiar agregado correctamente");
+
+    document.getElementById("cardfamiliares").style.display = "inline";
+
+    cerrarfamiliarmodal();
+
+
+   }
+
+
+
+   function registrar_vehiculo(){
+
+    var marca =  document.getElementById("marca").value;
+    var modelo =  document.getElementById("modelo").value;
+    var tipo =  document.getElementById("tipo").value;
+    var ano =  document.getElementById("ano").value;
+    var adquisicion =  document.getElementById("adquisicion").value;
+    var tiempo =  document.getElementById("tiempo").value;
+
+    console.log(marca);
+    console.log(modelo);
+    console.log(tipo);
+    console.log(ano);
+    console.log(adquisicion);
+    console.log(tiempo);
+
+    var datos = new FormData();
+
+
+    datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    datos.append('marca', marca);
+    datos.append('modelo', modelo);
+    datos.append('tipo', tipo);
+    datos.append('ano', ano);
+    datos.append('adquisicion', adquisicion);
+    datos.append('tiempo', tiempo);
+
+    
+
+    arrayvehiculos.push([marca,modelo,tipo,ano,adquisicion,tiempo]);
+
+    console.log(arrayvehiculos);
+
+    $('#tablevehiculo').empty();
+
+    for (var i = 0; i < arrayvehiculos.length; i++) {
+
+      console.log(arrayvehiculos[i]);
+
+      var myString = `<tr>
+                      <td class="text-sm">`+arrayvehiculos[i][0].toUpperCase()+`</td>
+                      <td class="text-sm">`+arrayvehiculos[i][1].toUpperCase()+`</td>
+                      <td class="text-sm">`+arrayvehiculos[i][3].toUpperCase()+`</td>
+                    </tr>`;
+
+      $('#tablevehiculo').append(myString);
+
+
+    }
+
+    alertas("Vehiculo","success","vehiculo agregado correctamente");
+
+    document.getElementById("cardvehiculo").style.display = "inline";
+
+    cerrarmodalvehiculo();
+
+
+   }
+
+   if (document.getElementById('choices-tipotecho')) {
+      var element1 = document.getElementById('choices-tipotecho');
+      const example1 = new Choices(element1, {
+        searchEnabled: false
+      });
+    };
+
+
+    
+
+      if (document.getElementById('choices-tipovivienda')) {
+      var element3 = document.getElementById('choices-tipovivienda');
+      const example3 = new Choices(element3, {
+        searchEnabled: false
+      });
+    };
+
+   
+
+    if (document.getElementById('choices-sexo')) {
+      var element5 = document.getElementById('choices-sexo');
+      const example5 = new Choices(element5, {
+        searchEnabled: false
+      });
+    };
+
+    if (document.getElementById('choices-estado')) {
+      var element6 = document.getElementById('choices-estado');
+      const example6 = new Choices(element6, {
+        searchEnabled: false
+      });
+    };
+
+    if (document.getElementById('tipopared')) {
+      var element2 = document.getElementById('tipopared');
+      const example2 = new Choices(element2, {
+        searchEnabled: false
+      });
+    };
+    
+</script>
+
+<script type="text/javascript">
+  // Configuración centralizada
+  const CONFIG = {
+      map: {
+          zoom: 16, // Aumentado para mejor precisión
+          mapId: "a8e7fef2ab872101",
+          markerIcon: {
+              url: 'https://static.vecteezy.com/system/resources/thumbnails/017/178/337/small/location-map-marker-icon-symbol-on-transparent-background-free-png.png',
+              size: [50, 50],
+              anchor: [0, 50]
+          }
+      },
+      geolocation: {
+          enableHighAccuracy: true,
+          timeout: 15000,        // Aumentado a 15 segundos
+          maximumAge: 0,         // Siempre obtener posición nueva
+          watchPosition: false   // Opción para seguimiento continuo
+      },
+      animation: {
+          numDeltas: 100,
+          delay: 10
+      }
+  };
+  
+  class LocationMap {
+      constructor() {
+          this.map = null;
+          this.marker = null;
+          this.position = null;
+          this.coordenadas = null;
+          this.nombreUbicacion = null;
+          this.watchId = null;
+          this.accuracyCircle = null;
+          this.lastKnownPosition = null;
+      }
+  
+      async iniciar_mapa() {
+          try {
+              // Primero intentamos obtener una ubicación rápida
+              await this.obtenerUbicacionInicial();
+              
+              // Luego iniciamos un seguimiento más preciso si está configurado
+              if (CONFIG.geolocation.watchPosition) {
+                  this.iniciarSeguimientoUbicacion();
+              }
+          } catch (error) {
+              this.handleGeolocationError(error);
+          }
+      }
+  
+      async obtenerUbicacionInicial() {
+          return new Promise((resolve, reject) => {
+              if (!navigator.geolocation) {
+                  reject(new Error('Geolocalización no soportada en este navegador'));
+                  return;
+              }
+  
+              // Primero intentamos obtener la última ubicación conocida
+              if (this.lastKnownPosition) {
+                  this.actualizarPosicion(this.lastKnownPosition);
+                  resolve(this.lastKnownPosition);
+                  return;
+              }
+  
+              // Configuración para alta precisión
+              const options = {
+                  enableHighAccuracy: CONFIG.geolocation.enableHighAccuracy,
+                  timeout: CONFIG.geolocation.timeout,
+                  maximumAge: CONFIG.geolocation.maximumAge
+              };
+  
+              navigator.geolocation.getCurrentPosition(
+                  (posicion) => {
+                      console.log('Precisión de la ubicación:', posicion.coords.accuracy, 'metros');
+                      
+                      // Solo actualizar si la precisión es mejor que 100 metros
+                      if (posicion.coords.accuracy <= 100 || !this.position) {
+                          this.actualizarPosicion(posicion);
+                          resolve(posicion);
+                      } else {
+                          console.log('Ubicación descartada por baja precisión');
+                          this.mostrarAlerta('Aviso', 'warning', 'Buscando mejor precisión...');
+                          // Intentar de nuevo con más tiempo
+                          this.obtenerUbicacionPrecisa();
+                      }
+                  },
+                  (error) => {
+                      reject(error);
+                  },
+                  options
+              );
+          });
+      }
+  
+      obtenerUbicacionPrecisa() {
+          const optionsPrecise = {
+              enableHighAccuracy: true,
+              timeout: 30000, // 30 segundos
+              maximumAge: 0
+          };
+  
+          navigator.geolocation.getCurrentPosition(
+              (posicion) => {
+                  console.log('Nueva precisión:', posicion.coords.accuracy, 'metros');
+                  this.actualizarPosicion(posicion);
+              },
+              (error) => this.handleGeolocationError(error),
+              optionsPrecise
+          );
+      }
+  
+      actualizarPosicion(posicion) {
+          this.lastKnownPosition = posicion;
+          this.position = [posicion.coords.latitude, posicion.coords.longitude];
+          this.coordenadas = {
+              lat: posicion.coords.latitude,
+              lng: posicion.coords.longitude
+          };
+          
+          console.log('Ubicación actualizada:', this.position);
+          console.log('Precisión:', posicion.coords.accuracy, 'metros');
+          
+          if (this.map) {
+              this.actualizarMapa();
+          } else {
+              this.initMap();
+          }
+      }
+  
+      initMap() {
+          const latlng = new google.maps.LatLng(this.position[0], this.position[1]);
+          this.updateCoordinatesDisplay();
+  
+          const myOptions = {
+              mapId: CONFIG.map.mapId,
+              zoom: CONFIG.map.zoom,
+              center: latlng,
+              mapTypeControl: true,
+              streetViewControl: true,
+              fullscreenControl: true,
+              zoomControl: true
+          };
+  
+          this.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+          this.createMarker(latlng);
+          this.createAccuracyCircle(latlng, this.lastKnownPosition.coords.accuracy);
+          this.setupMapClickListener();
+          this.geocodeLocation();
+      }
+  
+      createAccuracyCircle(latlng, accuracy) {
+          if (this.accuracyCircle) {
+              this.accuracyCircle.setMap(null);
+          }
+  
+          this.accuracyCircle = new google.maps.Circle({
+              center: latlng,
+              radius: accuracy,
+              map: this.map,
+              fillColor: '#4285F4',
+              fillOpacity: 0.2,
+              strokeColor: '#4285F4',
+              strokeOpacity: 0.4,
+              strokeWeight: 1
+          });
+      }
+  
+      actualizarMapa() {
+          const latlng = new google.maps.LatLng(this.position[0], this.position[1]);
+          this.map.setCenter(latlng);
+          this.marker.setPosition(latlng);
+          this.updateCoordinatesDisplay();
+          this.createAccuracyCircle(latlng, this.lastKnownPosition.coords.accuracy);
+          this.geocodeLocation();
+      }
+  
+      createMarker(latlng) {
+          this.marker = new google.maps.Marker({
+              icon: {
+                  url: CONFIG.map.markerIcon.url,
+                  size: new google.maps.Size(...CONFIG.map.markerIcon.size),
+                  scaledSize: new google.maps.Size(...CONFIG.map.markerIcon.size),
+                  anchor: new google.maps.Point(...CONFIG.map.markerIcon.anchor)
+              },
+              position: latlng,
+              map: this.map,
+              title: "Tu ubicación actual",
+              animation: google.maps.Animation.DROP
+          });
+      }
+  
+      updateCoordinatesDisplay() {
+          const elements = {
+              lat: document.getElementById("lat"),
+              long: document.getElementById("long")
+          };
+  
+          Object.entries(elements).forEach(([key, element]) => {
+              if (element) {
+                  element.innerHTML = this.position[key === 'lat' ? 0 : 1].toFixed(6);
+              }
+          });
+      }
+  
+      setupMapClickListener() {
+          this.map.addListener('click', (event) => {
+              const result = [event.latLng.lat(), event.latLng.lng()];
+              this.transition(result);
+          });
+      }
+  
+      geocodeLocation() {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ 'location': this.coordenadas }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                  this.nombreUbicacion = results[0].formatted_address;
+                  const labelubi = document.getElementById("labelubi");
+                  if (labelubi) {
+                      labelubi.innerHTML = this.nombreUbicacion;
+                  }
+              } else {
+                  this.mostrarAlerta('Error', 'error', 'No se encontró la dirección para esta ubicación');
+              }
+          });
+      }
+  
+      transition(result) {
+          const numDeltas = CONFIG.animation.numDeltas;
+          const deltaLat = (result[0] - this.position[0]) / numDeltas;
+          const deltaLng = (result[1] - this.position[1]) / numDeltas;
+          this.animateMarker(deltaLat, deltaLng, numDeltas, 0);
+      }
+  
+      animateMarker(deltaLat, deltaLng, numDeltas, i) {
+          this.position[0] += deltaLat;
+          this.position[1] += deltaLng;
+          const latlng = new google.maps.LatLng(this.position[0], this.position[1]);
+          this.marker.setPosition(latlng);
+          
+          if (i < numDeltas) {
+              requestAnimationFrame(() => {
+                  this.animateMarker(deltaLat, deltaLng, numDeltas, i + 1);
+              });
+          } else {
+              this.updateCoordinatesDisplay();
+              this.geocodeLocation();
+          }
+      }
+  
+      handleGeolocationError(error) {
+          const errorMessages = {
+              1: 'Permiso de ubicación denegado. Por favor, habilita la ubicación en tu navegador.',
+              2: 'No se pudo obtener la ubicación. Verifica tu conexión GPS.',
+              3: 'Se agotó el tiempo de espera. Intenta de nuevo.'
+          };
+          
+          console.error('Error de geolocalización:', error);
+          this.mostrarAlerta('Error de ubicación', 'error', 
+              errorMessages[error.code] || 'Error desconocido al obtener la ubicación');
+      }
+  
+      mostrarAlerta(titulo, icono, texto) {
+          Swal.fire({
+              position: "top-end",
+              icon: icono,
+              title: titulo,
+              text: texto,
+              showConfirmButton: false,
+              timer: 4000
+          });
+      }
+  }
+  
+  // Instancia global del mapa
+  const locationMapInstance = new LocationMap();
+  
+  // Función global para iniciar el mapa
+  function iniciar_mapa() {
+      locationMapInstance.iniciar_mapa();
+  }
+  
+  // Función global para alertas
+  function alertas(titulo, icono, texto) {
+      locationMapInstance.mostrarAlerta(titulo, icono, texto);
+  }
+  
+  // Funciones para los modales (mantenidas sin cambios)
+  function nuevofamiliar() {
+      $('#familiarmodal').modal('show');
+  }
+  
+  function cerrarfamiliarmodal() {
+      $('#familiarmodal').modal('hide');
+  }
+  
+  function nuevovehiculo() {
+      $('#vehiculomodal').modal('show');
+  }
+  
+  function cerrarmodalvehiculo() {
+      $('#vehiculomodal').modal('hide');
+  }
+  
+  function modalvivienda() {
+      $('#viviendamodal').modal('show');
+  }
+  
+  function cerrarmodalvivienda() {
+      $('#viviendamodal').modal('hide');
+  }
+  </script>
+
+{% endblock %}
