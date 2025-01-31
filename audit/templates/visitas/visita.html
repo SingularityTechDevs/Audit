@@ -894,7 +894,6 @@
 
    function enviar_visita(){
 
-      
       var cita = {{cita.id}}
 
       console.log(cita);
@@ -920,9 +919,8 @@
       //Realiza la solicitud AJAX con método POST
         $.ajax({
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
-            url: '{% url 'registrar_visita'  %}',  // La URL de tu vista Django
+            url: '{% url "registrar_visita" %}',  // La URL de tu vista Django
             type: 'POST',
-            contentType: 'application/json',  // Indica que estás enviando JSON
             data: datos,
             processData: false,
             contentType: false,  // Convierte los datos a JSON si es necesario
@@ -940,12 +938,7 @@
                 //alertas("Visita","success","Visita registrada correctamente");
             }
         });
-
-
-      
    }
-
-
 
    function agregar_vivienda(){
 
