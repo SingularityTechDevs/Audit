@@ -172,17 +172,23 @@
 
                <br>
 
-                  <button type="button" name="button" onclick="nuevofamiliar()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
-                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Familiar </span></button>
-
-                  <button type="button" name="button" onclick="nuevovehiculo()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
-                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Vehiculos </span></button>
+      
 
 
-                  <button type="button" name="button" onclick="modalvivienda()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
-                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Vivienda </span></button>
+                  
 
                  
+
+<table>
+  <tr>
+    <td><button type="button" name="button" onclick="nuevofamiliar()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Familiar </span></button></td>
+    <td><button type="button" name="button" onclick="nuevovehiculo()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Vehiculos </span></button></button></td>
+    <td><button type="button" name="button" onclick="modalvivienda()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Vivienda </span></button></button></td>
+  </tr>
+</table>
 
                   <div class="d-flex justify-content-end mt-4">
 
@@ -1058,6 +1064,37 @@
 
     cerrarmodalvivienda();
 
+    document.getElementById("choices-tipovivienda").value = "";
+    document.getElementById("choices-tipotecho").value = "";
+    document.getElementById("tipopared").value = "";
+    document.getElementById("direccion_vivienda").value = "";
+    document.getElementById("monto_alquiler").value = "";
+    document.getElementById("tiempo_ocupando").value = "";
+    document.getElementById("comentario_general").value = "";
+    document.getElementById("neveracheck").checked = false;
+    document.getElementById("lavadorackeck").checked = false;
+    document.getElementById("secadoracheck").checked = false;
+    document.getElementById("luzcheck").checked = false;
+    document.getElementById("gascheck").checked = false;
+    document.getElementById("internetcheck").checked = false;
+    document.getElementById("aguacheck").checked = false;
+    document.getElementById("telecablecheck").checked = false;
+    document.getElementById("computadoracheck").checked = false;
+    document.getElementById("parabolacheck").checked = false;
+    
+    document.getElementById("cantidad_computadoras").value = "";
+    document.getElementById("cantidad_televisores").value = "";
+    
+
+    document.getElementById("comentario_televisores").value = "";
+    document.getElementById("cantidad_aires").value = "";
+    document.getElementById("comentario_aires").value = "";
+    document.getElementById("otrosservicioscheck").checked = false;
+    document.getElementById("comentario_otros").value = "";
+    document.getElementById("telefonocheck").checked = false;
+    document.getElementById("comentario_Telefono").value = "";
+    document.getElementById("cometario_electrodomestico").value = "";
+
 
    }
 
@@ -1085,6 +1122,9 @@
     datos.append('parentezco', parentezco);
     datos.append('edad', edad);
     datos.append('ocupacion', ocupacion);
+
+
+
 
     
 
@@ -1114,6 +1154,14 @@
     document.getElementById("cardfamiliares").style.display = "inline";
 
     cerrarfamiliarmodal();
+
+
+    document.getElementById("nombre_completo").value = "";
+    document.getElementById("apellido_completo").value = "";
+    document.getElementById("parentezco").value = "";
+    document.getElementById("edad").value = "";
+    document.getElementById("ocupacion").value = "";
+
 
 
    }
@@ -1175,6 +1223,13 @@
     document.getElementById("cardvehiculo").style.display = "inline";
 
     cerrarmodalvehiculo();
+
+    document.getElementById("marca").value = ""; 
+    document.getElementById("modelo").value = ""; 
+    document.getElementById("tipo").value = ""; 
+    document.getElementById("ano").value = ""; 
+    document.getElementById("adquisicion").value = ""; 
+    document.getElementById("tiempo").value = "";
 
 
    }

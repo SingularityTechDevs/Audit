@@ -378,6 +378,38 @@
     document.getElementById("cardvivienda").style.display = "inline";
 
 
+    document.getElementById("choices-tipovivienda").value = "";
+    document.getElementById("choices-tipotecho").value = "";
+    document.getElementById("tipopared").value = "";
+    document.getElementById("direccion_vivienda").value = "";
+    document.getElementById("monto_alquiler").value = "";
+    document.getElementById("tiempo_ocupando").value = "";
+    document.getElementById("comentario_general").value = "";
+    document.getElementById("neveracheck").checked = false;
+    document.getElementById("lavadorackeck").checked = false;
+    document.getElementById("secadoracheck").checked = false;
+    document.getElementById("luzcheck").checked = false;
+    document.getElementById("gascheck").checked = false;
+    document.getElementById("internetcheck").checked = false;
+    document.getElementById("aguacheck").checked = false;
+    document.getElementById("telecablecheck").checked = false;
+    document.getElementById("computadoracheck").checked = false;
+    document.getElementById("parabolacheck").checked = false;
+    
+    document.getElementById("cantidad_computadoras").value = "";
+    document.getElementById("cantidad_televisores").value = "";
+    
+
+    document.getElementById("comentario_televisores").value = "";
+    document.getElementById("cantidad_aires").value = "";
+    document.getElementById("comentario_aires").value = "";
+    document.getElementById("otrosservicioscheck").checked = false;
+    document.getElementById("comentario_otros").value = "";
+    document.getElementById("telefonocheck").checked = false;
+    document.getElementById("comentario_Telefono").value = "";
+    document.getElementById("cometario_electrodomestico").value = "";
+
+
    }
 
 
@@ -431,6 +463,14 @@
     alertas("Familiar","success","familiar agregado correctamente");
 
     document.getElementById("cardfamiliares").style.display = "inline";
+
+    document.getElementById("nombre_completo").value = "";
+    document.getElementById("apellido_completo").value = "";
+    document.getElementById("parentezco").value = "";
+    document.getElementById("edad").value = "";
+    document.getElementById("ocupacion").value = "";
+
+    cerrarfamiliarmodal();
 
 
    }
@@ -490,6 +530,17 @@
     alertas("Vehiculo","success","vehiculo agregado correctamente");
 
     document.getElementById("cardvehiculo").style.display = "inline";
+
+
+    document.getElementById("marca").value = ""; 
+    document.getElementById("modelo").value = ""; 
+    document.getElementById("tipo").value = ""; 
+    document.getElementById("ano").value = ""; 
+    document.getElementById("adquisicion").value = ""; 
+    document.getElementById("tiempo").value = "";
+
+
+    cerrarmodalvehiculo();
 
 
    }
