@@ -1,0 +1,639 @@
+{% extends "core2.html" %}
+{% load static %}
+{% block content %} 
+
+<div class="container-fluid py-4">
+
+      <!-- Modal -->
+      <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Nuevo Paciente</h5>
+              
+            </div>
+            <div class="modal-body">
+              <div class="p-4">
+              <form>
+
+                <div style="text-align: center;">
+                  <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <div class="fileinput-preview img-thumbnail img-circle" data-trigger="fileinput" style="width: 200px; height: 150px;">
+                      <img src="{% static 'assets/img/perfil.png' %}"  alt="...">
+                    </div>
+
+                    <div>
+                      <span class="btn btn-outline-secondary btn-file">
+                        <span class="fileinput-new">Subir Imagen</span>
+                        <span class="fileinput-exists">Cambiar</span>
+                        <input  type="file" name="file" id="file">
+                      </span>
+                      <a href="#" class="btn btn-outline-secondary fileinput-exists" data-dismiss="fileinput">Remover</a>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Nombre Completo</label>
+                      <input type="text" maxlength="100" id="nombre_completo" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Identificacion</label>
+                      <input type="number" max="9999999999999" id="identificacion" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="my-3">
+                      
+                        <select type="text" id="choices-identificacion" class="form-control">
+
+                             <option value="">Tipo Identificacion</option>               
+                             <option value="Cedula">Cedula</option>
+                             <option value="Pasaporte">Pasaporte</option>
+                        </select>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Fecha Nacimiento</label>
+                      <input type="date" id="picker" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="my-3">
+                      
+                        <select type="text" id="choices-sexo" class="form-control">
+                             <option value="">Sexo</option>               
+                             <option value="F">Femenino</option>
+                             <option value="M">Masculino</option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Direccion</label>
+                      <input type="text" id="direccion" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Telefono Celular</label>
+                      <input type="text" maxlength="10" pattern="[0-9]" id="celular" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Correo Electronico</label>
+                      <input type="email" id="correo" class="form-control">
+                    </div>
+                  </div>
+                  
+                </div>
+              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="registrar_paciente()" class="btn btn-info">Registrar</button>
+              <button type="button" onclick="cerrarmodalpaciente()" class="btn btn-secondary">Cerrar</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- Card header -->
+            <div class="card-header p-3 pt-2 bg-transparent">
+              <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+              <i class="material-icons opacity-10">groups</i>
+              </div>
+              <br>
+              <br>
+              <div class="d-lg-flex">
+                <div>
+                  <h5 class="mb-0">Administrador De Pacientes</h5>
+                  <p class="text-sm mb-0">
+                    Listado de pacientes
+                  </p>
+                </div>
+                <div class="ms-auto my-auto mt-lg-0 mt-4">
+                  <div class="ms-auto my-auto">
+                    <a onclick="nuevopaciente()" class="btn bg-gradient-info btn-sm mb-0" >+&nbsp; Nuevo Paciente</a>
+                    
+                    
+                    <button class="btn btn-outline-info btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Exportar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-0">
+              <div class="table-responsive">
+                <table class="table table-flush" id="products-list">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Identificación</th>
+                      <th>Nombre Completo</th>
+                      <th>Edad</th>
+                      <th>Sexo</th>
+                      
+                      <th>Celular</th>
+                      <th>Correo Electrónico</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table">
+                    
+                    
+                    
+                  </tbody>
+                  
+                  <tfoot>
+                    <tr>
+                      <th>Identificación</th>
+                      <th>Nombre Completo</th>
+                      <th>Edad</th>
+                      <th>Sexo</th>
+                      
+                      <th>Celular</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+  <script src="{% static 'assets/js/plugins/datatables.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/choices.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/flatpickr.min.js' %}"></script>
+
+  <script type="text/javascript">
+    
+    var fecha_nacimiento;
+    var calendario = flatpickr("#picker", {
+        allowInput: true,
+        dateFormat: "d-m-Y",
+        locale: {
+        firstDayOfWeek: 1,
+        weekdays: {
+          shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+          longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],         
+        }, 
+        months: {
+          shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Оct', 'Nov', 'Dic'],
+          longhand: ['Enero', 'Febreo', 'Мarzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        },
+        onChange: function(selectedDates, dateStr, instance) {
+            fecha_nacimiento = dateStr;
+            console.log(fecha_nacimiento);
+        }
+      },  // locale for this instance only
+    });
+  </script>
+  <script>
+
+    if (document.getElementById('choices-identificacion')) {
+      var element = document.getElementById('choices-identificacion');
+      const example = new Choices(element, {
+        searchEnabled: false
+      });
+    };
+
+    if (document.getElementById('choices-sexo')) {
+      var element = document.getElementById('choices-sexo');
+      const example = new Choices(element, {
+        searchEnabled: false
+      });
+    };
+
+    
+  </script>
+  <script type="text/javascript">
+    
+    var dataTableSearch;
+
+    $(document).ready(function(){
+       consulta_pacientes();
+
+
+      dataTableSearch = new simpleDatatables.DataTable("#products-list", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 7
+      });
+
+      document.querySelectorAll(".export").forEach(function(el) {
+        el.addEventListener("click", function(e) {
+          var type = el.dataset.type;
+
+          var data = {
+            type: type,
+            filename: "material-" + type,
+          };
+
+          if (type === "csv") {
+            data.columnDelimiter = "|";
+          }
+
+          dataTableSearch.export(data);
+        });
+      });
+    
+     });
+
+    function iniciar_tabla(){
+
+     
+    }
+    
+    function nuevopaciente(){
+      console.log("boton nuevo paciente presionado");
+      $('#exampleModal').modal('show');
+    }
+
+    function cerrarmodalpaciente(){
+      $('#exampleModal').modal('hide');
+    }
+
+    function alertas(titulo,icono,texto){
+      Swal.fire({
+                    position: "top-end",
+                    icon: icono,
+                    title: titulo,
+                    text: texto,
+                    showConfirmButton: false,
+                    timer: 2000
+                  });
+    }
+
+    function registrar_paciente(){
+
+      var nombre =  document.getElementById("nombre_completo").value;
+      var identificacion =  document.getElementById("identificacion").value;
+      var tipoidentificacion =  document.getElementById("choices-identificacion").value;
+      var fechanacimiento =  document.getElementById("picker").value; //$('#').val();
+      var sexo =  document.getElementById("choices-sexo").value;
+      var direccion =  document.getElementById("direccion").value;
+      var celular =  document.getElementById("celular").value;
+      var correo =  document.getElementById("correo").value;
+      var file =  document.getElementById("file").files[0];
+      var creador = {{request.user.id}}
+
+      if (nombre == "") {
+        alertas("CAMPO NOMBRE","warning","EL CAMPO NOMBRE NO PUEDE ESTAR VACIO")
+      }
+      else if (identificacion == "") {
+        alertas("CAMPO IDENTIFICACION","warning","EL CAMPO IDENTIFICACION NO PUEDE ESTAR VACIO")
+      }
+      else if (tipoidentificacion == "") {
+        alertas("CAMPO TIPO IDENTIFICACION","warning","SELECIONE EL TIPO DE INDENTIFICACION")
+      }
+      else if (fechanacimiento == "") {
+        alertas("CAMPO FECHA NACIMIENTO","warning","EL CAMPO FECHA NACIMIENTO NO PUEDE ESTAR VACIO")
+      }
+      else if (sexo == "") {
+        alertas("CAMPO SEXO","warning","SELECCIONE EL SEXO")
+      }
+      else if (direccion == "") {
+        alertas("CAMPO DIRECCION","warning","INGRESE LA DIRECCION")
+      }
+      else if (celular == "") {
+        alertas("CAMPO CELULAR","warning","INGRESE EL NUMERO CELULAR")
+      }
+      else if (correo == "") {
+        alertas("CAMPO CORREO","warning","INGRESE EL CORREO ELECTRONICO")
+      }
+      else{
+        var datos = new FormData();
+      datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      datos.append('nombre', nombre);
+      datos.append('identificacion', identificacion);
+      datos.append('tipoidentificacion', tipoidentificacion);
+      datos.append('fechanacimiento', fechanacimiento);
+      datos.append('sexo', sexo);
+      datos.append('direccion', direccion);
+      datos.append('celular', celular);
+      datos.append('correo', correo);
+      datos.append('file', file);
+      datos.append('creador', creador);
+
+
+      // Realiza la solicitud AJAX con método POST
+        $.ajax({
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            url: '{% url 'crear_paciente'  %}',  // La URL de tu vista Django
+            type: 'POST',
+            contentType: 'application/json',  // Indica que estás enviando JSON
+            data: datos,
+            processData: false,
+            contentType: false,  // Convierte los datos a JSON si es necesario
+            dataType: 'json',
+            success: function(data) {
+                // Maneja la respuesta JSON aquí
+                console.log(data);
+                console.log(data.response);
+                console.log(JSON.stringify(data));
+
+                if(data.response == "2"){
+
+                 alertas("SOLICITUD PROCESADA","success",data.mensaje);
+                  
+                  $('#exampleModal').modal('hide');
+
+                  consulta_pacientes();
+
+                  //LIMPIANDO MODAL
+
+                  document.getElementById("nombre_completo").value = "";
+                  document.getElementById("identificacion").value = "";
+                  $("#choices-identificacion").val($("#choices-identificacion option:first").val());
+                  
+                  document.getElementById("picker").value = ""; //$('#').val();
+                  
+                  $("#choices-sexo").val($("#choices-sexo option:first").val());
+                  document.getElementById("direccion").value = "";
+                  document.getElementById("celular").value = "";
+                  document.getElementById("correo").value = "";
+                  document.getElementById("file").value=null;
+
+
+
+                  
+                }
+                else if(data.response == "4"){
+                  Swal.fire({
+                    title: "PACIENTE EXISTENTE!",
+                    text: data.mensaje,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "OK!"
+                  })
+                }
+                else if(data.response == "1"){
+                  Swal.fire({
+                    title: "PACIENTE EXISTENTE!",
+                    text: data.mensaje,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SOLICITAR!"
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+
+                      //swal.close()
+
+
+
+                      var datos = new FormData();
+                      datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                      datos.append('medico', creador);
+                      datos.append('paciente', data.paciente);
+                      
+
+
+                      // Realiza la solicitud AJAX con método POST
+                        $.ajax({
+                            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                            url: '{% url 'solicitar_acceso_paciente'  %}',  // La URL de tu vista Django
+                            type: 'POST',
+                            contentType: 'application/json',  // Indica que estás enviando JSON
+                            data: datos,
+                            processData: false,
+                            contentType: false,  // Convierte los datos a JSON si es necesario
+                            success: function(data2) {
+                                // Maneja la respuesta JSON aquí
+                                if (data2.response == 1) {
+                                 
+
+                                 const { value: code } = Swal.fire({
+                                   icon: "info",
+                                   title: "Ingrese el codigo",
+                                   input: "text",
+                                   inputLabel: "Ingrese el codigo enviado al paciente",
+                                   confirmButtonText: "Enviar",
+                                   cancelButtonText: "Cancelar",
+                                   showLoaderOnConfirm: true,
+                                   showCancelButton: true,
+                                   inputValidator: (value) => {
+                                     if (!value) {
+                                       return "No puede estar vacio!";
+                                     }
+                                     else{
+                                      Swal.showLoading();
+
+                                      var datos2 = new FormData();
+                                      datos2.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                                      datos2.append('medico', creador);
+                                      datos2.append('paciente', data.paciente);
+                                      datos2.append('code', value);
+
+
+                                      $.ajax({
+                                          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                                          url: '{% url 'otorgar_acceso_paciente'  %}',  // La URL de tu vista Django
+                                          type: 'POST',
+                                          contentType: 'application/json',  // Indica que estás enviando JSON
+                                          data: datos2,
+                                          processData: false,
+                                          contentType: false,  // Convierte los datos a JSON si es necesario
+                                          success: function(data) {
+                                              // Maneja la respuesta JSON aquí
+                                              if (data.response == 1) {
+
+                                               alertas("PACIENTE OTORGADO","success",data.mensaje);
+                                               
+                                               $('#exampleModal').modal('hide');
+
+                                               consulta_pacientes();
+
+                                              }
+                                              else{
+                                                alertas("Oops","error",data.mensaje);
+                                              }
+
+                                           
+
+
+                                              
+                                              // Puedes hacer más cosas con los datos, como mostrarlos en la página
+                                          },
+                                          error: function(error) {
+                                              // Maneja los errores aquí
+                                              console.error('Error en la solicitud AJAX:', error);
+                                          }
+                                      });
+                                      
+                                     }
+                                   }
+                                 })
+                                 
+
+                                }
+                                else{
+                                  alertas("Oops","error",data.mensaje);
+                                }
+
+                                // Puedes hacer más cosas con los datos, como mostrarlos en la página
+                            },
+                            error: function(error) {
+                                // Maneja los errores aquí
+                                console.error('Error en la solicitud AJAX:', error);
+                            }
+                        });
+                      
+                      
+                    }
+                  });
+                }
+                else{
+                 alertas("Oops","error","EL PACIENTE NO PUDO SER REGISTRADO");
+                }
+
+                // Puedes hacer más cosas con los datos, como mostrarlos en la página
+            },
+            error: function(error) {
+                // Maneja los errores aquí
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+      }
+
+    }
+
+
+    function consulta_pacientes(){
+        
+        var datos = new FormData();
+        var creador = {{request.user.id}}
+        datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        datos.append('creador', creador);
+        // Datos que deseas enviar en el cuerpo del POST
+        
+
+        // Realiza la solicitud AJAX con método POST
+        $.ajax({
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            url: '{% url 'pacientes_json'  %}',  // La URL de tu vista Django
+            type: 'POST',
+            contentType: 'application/json',  // Indica que estás enviando JSON
+            data: datos,
+            processData: false,
+            contentType: false,  // Convierte los datos a JSON si es necesario
+            dataType: 'json',
+            success: function(data) {
+                // Maneja la respuesta JSON aquí
+                console.log(data);
+                console.log(data.pacientes);
+                console.log(JSON.stringify(data));
+
+                dataTableSearch.clear();
+                dataTableSearch.update();
+                dataTableSearch.destroy();
+
+                $('#table').empty();
+
+                
+                
+
+
+                for (var i = 0; i < data.pacientes.length; i++) {
+
+
+                     var myString = `<tr>
+                      <td class="text-sm">`+data.pacientes[i].identificacion.toUpperCase()+`</td>
+                      <td class="text-sm">`+data.pacientes[i].nombre_completo+`</td>
+                      <td class="text-sm">`+data.pacientes[i].edad+`</td>
+                      <td class="text-sm">`+data.pacientes[i].sexo+`</td>
+                      
+                      <td class="text-sm">`+data.pacientes[i].celular+`</td>
+                      <td>
+                        <span class="badge badge-success badge-sm">`+data.pacientes[i].correo_electronico+`</span>
+                      </td>
+                      <td class="text-sm">
+                        <a onclick="detalle_paciente(`+data.pacientes[i].id+`)" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
+                          <i class="material-icons text-secondary position-relative text-lg">visibility</i>
+                        </a>
+                        <a href="javascript:;" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
+                          <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
+                        </a>
+                        <a href="javascript:;" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
+                          <i class="material-icons text-secondary position-relative text-lg">delete</i>
+                        </a>
+                      </td>
+                    </tr>`;
+
+
+                    $('#table').append(myString);
+
+                    
+          
+                    }
+
+            
+                 
+                 dataTableSearch = new simpleDatatables.DataTable("#products-list", {
+                   searchable: true,
+                   fixedHeight: false,
+                   perPage: 7
+                 });
+
+               
+
+
+                // Puedes hacer más cosas con los datos, como mostrarlos en la página
+            },
+            error: function(error) {
+                // Maneja los errores aquí
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+       
+    }
+
+    function detalle_paciente(id){
+      window.location.assign(`/pacientes/vista_paciente/`+id+`/`);
+    }
+  </script>
+  <!-- Kanban scripts -->
+  <script src="{% static 'assets/js/plugins/dragula/dragula.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/jkanban/jkanban.js' %}"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+{% endblock %}

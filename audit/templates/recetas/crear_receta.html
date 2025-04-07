@@ -1,0 +1,372 @@
+<!-- recetas/templates/recetas/crear_receta.html -->
+{% extends "core2.html" %}
+{% load static %}
+{% block content %} 
+<div class="container-fluid py-4">
+   <div class="row mt-4">
+      <div class="col-lg-9 col-12 mx-auto position-relative">
+         <div class="card">
+            <div class="card-header p-3 pt-2">
+               <div class="icon icon-lg icon-shape bg-gradient-info shadow text-center border-radius-xl mt-n4 me-3 float-start">
+                  <i class="material-icons opacity-10">event</i>
+               </div>
+               <h6 class="mb-0">Creacion de Indicacion</h6>
+            </div>
+            <div class="card-body pt-2">
+                <div class="row mt-4">
+                  <div class="col-md-6">
+                    <div class="my-3">
+                      <label class="form-label">SELECCIONE ESTILO INDICACION</label>
+                        <select type="text" id="choices-modelo" class="form-control">
+                             <option value="">SELECIONAR ESTILO INDICACION</option>  
+                             {% for receta in recetas %}
+                                <option value="{{receta.id}}">{{receta.modelo}}</option>
+                             {% endfor %}             
+                        </select>
+                    </div>
+                  </div>
+                  
+               </div>
+
+
+               <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">NOMBRE DEL PACIENTE</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="nombre" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">EDAD</label>
+                        <input type="text" class="form-control" id="edad" style="text-transform:uppercase;" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+               </div>
+
+               
+                <div class="row mt-4">
+                  <div class="col-4">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">IDENTIFICACION</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="identificacion" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+
+                  <div class="col-4">
+                     <div class="">
+                        <select type="text" id="choices-sexo" class="form-control">
+                             <option value="">Sexo</option>               
+                             <option value="Femenino">Femenino</option>
+                             <option value="Masculino">Masculino</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">ARS</label>
+                        <input type="text" class="form-control" id="ars" style="text-transform:uppercase;" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+               </div>
+
+               <br>
+               
+               <div class="row mt-4">
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">MEDICAMENTO</label>
+                        <input  type="text" class="form-control" style="text-transform:uppercase;" id="medicamento" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+                  <div class="col-6">
+                     <div class="input-group input-group-outline">
+                        <label for="projectName" class="form-label">DOSIS</label>
+                        <input type="text" class="form-control" id="dosis" style="text-transform:uppercase;" onfocus="focused(this)" onfocusout="defocused(this)">
+                     </div>
+                  </div>
+               </div>
+               <div class="row mt-4">
+                  <div class="col-12">
+                    <label for="projectName" class="form-label">USO</label>
+                     <div class="input-group input-group-static">
+                        
+                        <textarea class="form-control" rows="2" placeholder="Describa el uso del medicamento" spellcheck="false" id="uso" style="text-transform:uppercase;"></textarea>
+                     </div>
+                  </div>
+                  
+               </div>
+
+              <br>
+
+               <div class="card" style="display: none;" id="card_medicamentos">
+                 <div class="table-responsive">
+                   <table class="table align-items-center mb-0">
+                     <thead>
+                       <tr>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Medicamento</th>
+                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Dosis</th>
+                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">USO</th>
+                        
+                       </tr>
+                     </thead>
+                     <tbody id="table">
+                       
+
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+
+               
+               <br>
+
+                  <button type="button" name="button" onclick="agregar_medicamento()" class="btn bg-gradient-info m-0 me-2"><span class="sidenav-mini-icon"> <font size="3">+</font> </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Agregar Medicamento </span></button>
+                  <div class="d-flex justify-content-end mt-4">
+
+
+
+                  
+                  <button id="boton_crear" type="button" style="display:none;" onclick="crear_indicacion()" name="button" class="btn bg-gradient-info m-0 ms-2">Crear Indicacion</button>
+                  
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+</div>
+
+<script src="{% static 'assets/js/plugins/choices.min.js' %}"></script>
+
+<script type="text/javascript">
+   if (document.getElementById('choices-modelo')) {
+      var element = document.getElementById('choices-modelo');
+      const example = new Choices(element, {
+        searchEnabled: false
+      });
+    };
+
+    if (document.getElementById('choices-sexo')) {
+      var element = document.getElementById('choices-sexo');
+      const example = new Choices(element, {
+        searchEnabled: false
+      });
+    };
+</script>
+
+<script>
+
+    var data = {};;
+    var contador = 1;
+    var medicamentos_array = [];
+      
+
+    function agregar_medicamento(){
+
+
+      var nombre =  document.getElementById("nombre").value;
+      var edad =  document.getElementById("edad").value;
+      var medicamento =  document.getElementById("medicamento").value;
+      var dosis =  document.getElementById("dosis").value;
+      var uso =  document.getElementById("uso").value;
+      var identificacion =  document.getElementById("identificacion").value;
+      var sexo =  document.getElementById("choices-sexo").value;
+      var ars = document.getElementById("ars").value;
+
+      if (medicamento == "") {
+         alertas("EL CAMPO MEDICAMENTO NO PUEDE ESTAR VACIO","warning")
+      }
+      else if (dosis == ""){
+         alertas("EL CAMPO DOSIS NO PUEDE ESTAR VACIO","warning")
+      }
+      else if (uso == ""){
+         alertas("EL CAMPO USO NO PUEDE ESTAR VACIO","warning")
+      }
+      
+      else if (sexo == ""){
+         alertas("EL CAMPO SEXO NO PUEDE ESTAR VACIO","warning")
+      }
+      
+      else{
+        
+        data["NOMBRE"] = nombre.toUpperCase();
+        data["EDAD"] = edad.toUpperCase();
+        data["SEXO"] = sexo;
+        data["IDENTIFICACION"] = identificacion;
+        data["ARS"] = ars;
+
+
+        let date = new Date()
+
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+
+        if(month < 10){
+          data["FECHA"] = `${day}-0${month}-${year}`;
+          
+        }else{
+
+         data["FECHA"] = `${day}-${month}-${year}`
+         
+        }
+
+        
+
+       data["[#"+contador.toString()+"]MEDICAMENTO"] = medicamento.toUpperCase() + " " + dosis.toUpperCase();
+       //data["DOSIS"+contador.toString()] = dosis;
+       data["[#"+contador.toString()+"]USO"] = uso.toUpperCase();
+
+
+       contador = contador + 1;
+
+       console.log(data);
+
+     
+
+       var medicamento_tabla = `<tr>
+                         <td>
+                           <div class="d-flex px-2 py-1">
+                             <div>
+                               
+                             </div>
+                             <div class="d-flex flex-column justify-content-center">
+                               <h6 class="mb-0 text-xs">`+medicamento.toUpperCase()+`</h6>
+                               
+                             </div>
+                           </div>
+                         </td>
+                         <td>
+                           <p class="text-xs font-weight-bold mb-0">`+dosis.toUpperCase()+`</p>
+                           
+                         </td>
+                         <td class="align-middle text-center text-sm">
+                           <p class="text-xs font-weight-bold mb-0">`+uso.toUpperCase()+`</p>
+
+                         </td>
+                         
+                       </tr>`;
+       
+       $('#table').append(medicamento_tabla);
+
+       document.getElementById("card_medicamentos").style.display = "inline";
+
+       document.getElementById("medicamento").value = "";
+       document.getElementById("dosis").value = "";
+       document.getElementById("uso").value = "";
+
+       document.getElementById("boton_crear").style.display = "inline";
+       
+
+
+       if (medicamento != "") {
+         medicamentos_array.push(medicamento);
+       }
+
+      }
+
+        
+
+        
+
+       
+
+            
+      
+       //var jsonString= JSON.stringify(obj);
+    }
+
+    function alertas(titulo,icono){
+      Swal.fire({
+                    position: "top-end",
+                    icon: icono,
+                    title: titulo,
+                    showConfirmButton: false,
+                    timer: 2000
+                  });
+    }
+
+    function crear_indicacion(){
+
+
+      var modelo =  document.getElementById("choices-modelo").value;
+      var nombre =  document.getElementById("nombre").value;
+      var edad =  document.getElementById("edad").value;
+
+      console.log(modelo);
+      console.log(medicamentos_array);
+
+      if (modelo == "") {
+
+         alertas("POR FAVOR SELECCIONE EL ESTILO DE LA INDICACION","warning")
+
+      }
+      else if (nombre == ""){
+         alertas("EL CAMPO NOMBRE NO PUEDE ESTAR VACIO","warning")
+      }
+      else if (edad == ""){
+         alertas("EL CAMPO EDAD NO PUEDE ESTAR VACIO","warning")
+      }
+
+      else if (medicamentos_array.length == 0){
+         alertas("DEBE AGREGAR MEDICAMENTOS A ESTA INDICACION","warning")
+      }
+      else{
+         var datos = new FormData();
+         datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+         datos.append('data', JSON.stringify(data));
+         datos.append('modelo', modelo);
+         
+
+
+         // Realiza la solicitud AJAX con método POST
+           $.ajax({
+               headers: {'X-CSRFToken': '{{ csrf_token }}'},
+               url: '{% url 'crear_pdf'  %}',  // La URL de tu vista Django
+               type: 'POST',
+               contentType: 'application/json',  // Indica que estás enviando JSON
+               data: datos,
+               processData: false,
+               contentType: false,  // Convierte los datos a JSON si es necesario
+               xhrFields: {
+                   responseType: 'blob' // Indica que esperas un Blob como respuesta
+                 },
+               success: function(blob) {
+                   // Maneja la respuesta JSON aquí
+
+                 // Crea un enlace (link) para descargar el archivo
+                     var a = document.createElement('a');
+                     document.body.appendChild(a);
+                     a.style = 'display: none';
+
+                     // Crea una URL del Blob y asigna el enlace
+                     var url = window.URL.createObjectURL(blob);
+                     a.href = url;
+                     a.download = 'receta_generada.pdf';
+
+                     // Simula un clic en el enlace para iniciar la descarga
+                     a.click();
+
+                     // Libera la URL creada para evitar posibles problemas de memoria
+                     window.URL.revokeObjectURL(url);
+
+
+                   
+                   // Puedes hacer más cosas con los datos, como mostrarlos en la página
+               },
+               error: function(error) {
+                   // Maneja los errores aquí
+                   console.error('Error en la solicitud AJAX:', error);
+               }
+           });
+      }
+
+      
+
+      
+    }
+</script>
+
+{% endblock %}

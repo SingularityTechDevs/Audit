@@ -1,0 +1,534 @@
+{% extends "core2.html" %}
+{% load static %}
+{% block content %} 
+
+<div class="container-fluid py-4">
+
+      <!-- Modal -->
+      <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Nueva Cita</h5>
+              
+            </div>
+            <div class="modal-body">
+              <div class="p-4">
+              <form>
+
+                <div style="text-align: center;">
+                  <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <div class="fileinput-preview img-thumbnail img-circle" data-trigger="fileinput" style="width: 200px; height: 150px;">
+                      <img src="{% static 'assets/img/perfil.png' %}"  alt="...">
+                    </div>
+
+                    <div>
+                      <span class="btn btn-outline-secondary btn-file">
+                        <span class="fileinput-new">Subir Imagen</span>
+                        <span class="fileinput-exists">Cambiar</span>
+                        <input  type="file" name="file" id="file">
+                      </span>
+                      <a href="#" class="btn btn-outline-secondary fileinput-exists" data-dismiss="fileinput">Remover</a>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Nombre Completo</label>
+                      <input type="text" maxlength="100" id="nombre_completo" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Identificacion</label>
+                      <input type="number" max="9999999999999" id="identificacion" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="my-3">
+                      
+                        <select type="text" id="choices-identificacion" class="form-control">
+
+                             <option value="">Tipo Identificacion</option>               
+                             <option value="Cedula">Cedula</option>
+                             <option value="Pasaporte">Pasaporte</option>
+                        </select>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Fecha Nacimiento</label>
+                      <input type="date" id="picker" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="my-3">
+                      
+                        <select type="text" id="choices-sexo" class="form-control">
+                             <option value="">Sexo</option>               
+                             <option value="F">Femenino</option>
+                             <option value="M">Masculino</option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Direccion</label>
+                      <input type="text" id="direccion" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Telefono Celular</label>
+                      <input type="text" maxlength="10" pattern="[0-9]" id="celular" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Correo Electronico</label>
+                      <input type="email" id="correo" class="form-control">
+                    </div>
+                  </div>
+                  
+                </div>
+              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="registrar_paciente()" class="btn btn-info">Registrar</button>
+              <button type="button" onclick="cerrarmodalpaciente()" class="btn btn-secondary">Cerrar</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- Card header -->
+            <div class="card-header p-3 pt-2 bg-transparent">
+              <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+              <i class="material-icons opacity-10">groups</i>
+              </div>
+              <br>
+              <br>
+              <div class="d-lg-flex">
+                <div>
+                  <h5 class="mb-0">Administrador De Citas</h5>
+                  <p class="text-sm mb-0">
+                    Listado de visitas
+                  </p>
+                </div>
+                <div class="ms-auto my-auto mt-lg-0 mt-4">
+                  <div class="ms-auto my-auto">
+                    
+                    
+                    
+                    <button class="btn btn-outline-info btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Exportar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-0">
+              <div class="table-responsive">
+                <table class="table table-flush" id="products-list">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Usuario Solicitud</th>
+                      <th>Fecha Agendada</th>
+                      
+                      <th>Visitador</th>
+                      <th>Estatus</th>
+                      <th>Acciones</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody id="table">
+                    
+                    
+                    
+                  </tbody>
+                  
+                  <tfoot>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Usuario Solicitud</th>
+                      <th>Fecha Agendada</th>
+                      
+                      <th>Visitador</th>
+                      <th>Estatus</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+       <!-- Modal usuarios -->
+      <div class="modal fade bd-example-modal-lg" id="usuariosmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Asignar Visita</h5>
+              
+            </div>
+            <div class="modal-body">
+              <div class="p-4">
+              <form>
+ 
+              <div class="row mt-4">
+                  <div class="col-12">
+                     <div class="">
+                        <select type="text" id="choices-usuarios" class="form-control">
+                            <option value="">Usuarios</option>
+                             
+                        </select>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row mt-4" style="display: none;">
+                   <input type="text" id="idcita" class="form-control">
+                </div>
+
+                
+              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="asignar_visitador()" class="btn btn-info">Asignar</button>
+              <button type="button" onclick="cerrarmodalusuario()" class="btn btn-secondary">Cerrar</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+  <script src="{% static 'assets/js/plugins/datatables.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/choices.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/flatpickr.min.js' %}"></script>
+
+  <script type="text/javascript">
+    
+    var fecha_nacimiento;
+    var calendario = flatpickr("#picker", {
+        allowInput: true,
+        dateFormat: "d-m-Y",
+        locale: {
+        firstDayOfWeek: 1,
+        weekdays: {
+          shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+          longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],         
+        }, 
+        months: {
+          shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Оct', 'Nov', 'Dic'],
+          longhand: ['Enero', 'Febreo', 'Мarzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        },
+        onChange: function(selectedDates, dateStr, instance) {
+            fecha_nacimiento = dateStr;
+            console.log(fecha_nacimiento);
+        }
+      },  // locale for this instance only
+    });
+  </script>
+  <script>
+
+    
+
+
+    function nuevousuario(id){
+      document.getElementById("idcita").value = "";
+      document.getElementById("idcita").value = id;
+      console.log("boton nuevo paciente presionado");
+      
+      $('#usuariosmodal').modal('show');
+
+    }
+
+    function cerrarmodalusuario(){
+      console.log("boton nuevo paciente presionado");
+      $('#usuariosmodal').modal('hide');
+
+    }
+
+    
+  </script>
+  <script type="text/javascript">
+    
+    var dataTableSearch;
+
+    $(document).ready(function(){
+       consulta_visitas();
+       consulta_usuarios();
+
+
+      dataTableSearch = new simpleDatatables.DataTable("#products-list", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 7
+      });
+
+      document.querySelectorAll(".export").forEach(function(el) {
+        el.addEventListener("click", function(e) {
+          var type = el.dataset.type;
+
+          var data = {
+            type: type,
+            filename: "material-" + type,
+          };
+
+          if (type === "csv") {
+            data.columnDelimiter = "|";
+          }
+
+          dataTableSearch.export(data);
+        });
+      });
+    
+     });
+
+
+
+    function consulta_visitas(){
+        
+        var datos = new FormData();
+        var usuario = {{request.user.id}}
+        datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        datos.append('usuario', usuario);
+        // Datos que deseas enviar en el cuerpo del POST
+        
+
+        // Realiza la solicitud AJAX con método POST
+        $.ajax({
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            url: '{% url 'consulta_servicio'  %}',  // La URL de tu vista Django
+            type: 'POST',
+            contentType: 'application/json',  // Indica que estás enviando JSON
+            data: datos,
+            processData: false,
+            contentType: false,  // Convierte los datos a JSON si es necesario
+            dataType: 'json',
+            success: function(data) {
+                // Maneja la respuesta JSON aquí
+                console.log(data);
+               
+
+                dataTableSearch.clear();
+                dataTableSearch.update();
+                dataTableSearch.destroy();
+
+                $('#table').empty();
+
+                
+                
+                for (var i = 0; i < data.servicio.length; i++) {
+
+
+                     var myString = `<tr>
+                      <td class="text-sm">`+data.servicio[i].id+`</td>
+                      <td class="text-sm">`+data.servicio[i].titulo.toUpperCase()+`</td>
+                      <td class="text-sm">`+data.servicio[i].solcitante+`</td>
+                      <td class="text-sm">`+data.servicio[i].fecha+`</td>
+                      <td class="text-sm">`+data.servicio[i].visitador+`</td>
+                      <td class="text-sm">`+data.servicio[i].estatus+`</td>
+                      
+                      
+                      <td class="text-sm">
+                        <a onclick="registrador_visitas(`+data.servicio[i].id+`)" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
+                          <i class="material-icons text-secondary position-relative text-lg">visibility</i>
+                        </a>
+                        <a onclick="nuevousuario(`+data.servicio[i].id+`)" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
+                          <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
+                        </a>
+                        <a href="javascript:;" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
+                          <i class="material-icons text-secondary position-relative text-lg">delete</i>
+                        </a>
+                      </td>
+                    </tr>`;
+
+
+                    $('#table').append(myString);
+
+                    
+          
+                    }
+
+            
+                 
+                 dataTableSearch = new simpleDatatables.DataTable("#products-list", {
+                   searchable: true,
+                   fixedHeight: false,
+                   perPage: 7
+                 });
+
+               
+
+
+                // Puedes hacer más cosas con los datos, como mostrarlos en la página
+            },
+            error: function(error) {
+                // Maneja los errores aquí
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+       
+    }
+
+
+    function consulta_usuarios(){
+        
+        var datos = new FormData();
+        var usuario = {{request.user.id}}
+        datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        datos.append('usuario', usuario);
+        // Datos que deseas enviar en el cuerpo del POST
+        
+
+        // Realiza la solicitud AJAX con método POST
+        $.ajax({
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            url: '{% url 'consultar_usuarios'  %}',  // La URL de tu vista Django
+            type: 'POST',
+            contentType: 'application/json',  // Indica que estás enviando JSON
+            data: datos,
+            processData: false,
+            contentType: false,  // Convierte los datos a JSON si es necesario
+            dataType: 'json',
+            success: function(data) {
+                // Maneja la respuesta JSON aquí
+                console.log(data);
+
+
+                select = document.getElementById('choices-usuarios');
+                
+                for (var i = 0; i < data.Users.length; i++) {
+
+                	var opt = document.createElement('option');
+                	    opt.value = data.Users[i].id;
+                	    opt.innerHTML = data.Users[i].usuario;
+                	    select.appendChild(opt);
+          
+                }
+
+
+                if (document.getElementById('choices-usuarios')) {
+                  var element = document.getElementById('choices-usuarios');
+                  const example = new Choices(element, {
+                    searchEnabled: true
+                  });
+                };
+
+                // Puedes hacer más cosas con los datos, como mostrarlos en la página
+            },
+            error: function(error) {
+                // Maneja los errores aquí
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+       
+    }
+
+
+    function alertas(titulo,icono,texto){
+      Swal.fire({
+                    position: "top-end",
+                    icon: icono,
+                    title: titulo,
+                    text: texto,
+                    showConfirmButton: false,
+                    timer: 2000
+                  });
+    }
+
+
+    function asignar_visitador(idcita){
+      var datos = new FormData();
+      var usuario = {{request.user.id}}
+      var visitador = document.getElementById("choices-usuarios").value;
+      var servicio = document.getElementById("idcita").value;
+
+      datos.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      datos.append('usuario', usuario);
+      datos.append('visitador', visitador);
+      datos.append('servicio', servicio);
+      // Datos que deseas enviar en el cuerpo del POST
+      
+
+      // Realiza la solicitud AJAX con método POST
+      $.ajax({
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          url: '{% url 'asignar_visitador'  %}',  // La URL de tu vista Django
+          type: 'POST',
+          contentType: 'application/json',  // Indica que estás enviando JSON
+          data: datos,
+          processData: false,
+          contentType: false,  // Convierte los datos a JSON si es necesario
+          dataType: 'json',
+          success: function(data) {
+              // Maneja la respuesta JSON aquí
+              console.log(data);
+
+              alertas("Visitador","success","Visitador Asignado Correctamente");
+              cerrarmodalusuario();
+              consulta_visitas();
+
+              // Puedes hacer más cosas con los datos, como mostrarlos en la página
+          },
+          error: function(error) {
+              // Maneja los errores aquí
+              console.error('Error en la solicitud AJAX:', error);
+          }
+      });
+    }
+
+
+
+
+    function registrador_visitas(id){
+      window.location.assign(`/visitas/registrador_visitas/`+id+`/`);
+    }
+  </script>
+  <!-- Kanban scripts -->
+  <script src="{% static 'assets/js/plugins/dragula/dragula.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/jkanban/jkanban.js' %}"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+{% endblock %}
